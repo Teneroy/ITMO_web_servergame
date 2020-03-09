@@ -1,0 +1,39 @@
+{
+  "name": "itmo_web_servergame",
+  "version": "1.0.0",
+  "description": "typescript, express, websocket game",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:server": "cd server.src && tsc",
+    "build:client": "cd client.src && tsc",
+    "watch:server": "npm run build:server -- --watch",
+    "watch:client": "npm run build:client -- --watch",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Teneroy/ITMO_web_servergame.git"
+  },
+  "keywords": [
+    "game",
+    "server",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Teneroy/ITMO_web_servergame/issues"
+  },
+  "homepage": "https://github.com/Teneroy/ITMO_web_servergame#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.3",
+    "@types/node": "^13.9.0",
+    "@types/ws": "^7.2.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^7.2.3"
+  }
+}
