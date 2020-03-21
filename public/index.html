@@ -4,10 +4,46 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Document</title>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<h1>Hello!</h1>
+	<header>
+		<h1>ChessGame</h1>
+	</header>
+
+	<main class="waiting">
+		<h2>Подождите подключения следующего игрока</h2>
+	</main>
 	
+<!--	<main class="game" hidden>-->
+<!--		<h2>Ход противника</h2>-->
+<!--		<form name="player-roll">-->
+<!--			<fieldset disabled>-->
+<!--				<label for="f-player-roll-number">Ваше число</label>-->
+<!--				<input type="number" min="0" max="100" step="1" value="0" id="f-player-roll-number" name="number" />-->
+<!--				<button type="submit">Отправить</button>-->
+<!--			</fieldset>-->
+<!--		</form>-->
+<!--	</main>-->
+
+	<main class="game" hidden>
+		<section class="container">
+			<h2></h2>
+			<div class="chessboard">
+			</div>
+		</section>
+	</main>
+
+	<main class="result" hidden>
+		<h2>Игра закончена</h2>
+		<p>Игра прервана</p>
+		<button type="button" class="restart">Перезапустить</button>
+	</main>
+
+	<footer>
+		<p>ChessGame Alexey Chernishov</p>
+	</footer>
+
 	<script type="module" src="scripts/index.js"></script>
 </body>
 </html>

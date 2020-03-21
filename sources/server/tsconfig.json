@@ -1,0 +1,14 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"target": "ES2019",
+		"module": "commonjs",
+		"lib": ["ES2019"],
+		"outDir": "../../build",
+		"types": [
+			"node"
+		],
+		
+		"resolveJsonModule": true
+	}
+}

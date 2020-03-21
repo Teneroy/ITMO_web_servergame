@@ -1,0 +1,426 @@
+body {
+    margin: 0px;
+    font-family: Arial, sans-serif;
+    position: relative;
+    height: fit-content;
+    min-height: 100vh;
+}
+
+main {
+    /*margin-bottom: 40px;*/
+    padding-bottom: 60px;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1140px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+body main .chessboard .part:active {
+    transition: 0.3s all;
+    background-color: #26a6668a;
+}
+
+header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #fff;
+    background-color: #ee6e73;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+footer {
+    color: #fff;
+    background-color: #ee6e73;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    margin: 0px;
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+    margin: 0px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+form {
+    max-width: 600px;
+    margin: auto;
+}
+
+.input-field {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+input{
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #9e9e9e;
+    border-radius: 0;
+    outline: none;
+    height: 3rem;
+    width: 100%;
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    padding: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    -webkit-transition: border .3s, -webkit-box-shadow .3s;
+    transition: border .3s, -webkit-box-shadow .3s;
+    transition: box-shadow .3s, border .3s;
+    transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
+}
+
+input:focus {
+    transition: 0.3s all;
+    border-color: #26a69a;
+}
+
+button, input {
+    overflow: visible;
+}
+
+button, input, optgroup, select, textarea {
+    padding-left: 7px;
+    font-family: sans-serif;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+
+input+label {
+    width: 100%;
+}
+
+.input-field>label.active {
+    -webkit-transform: translateY(-14px) scale(0.8);
+    transform: translateY(-14px) scale(0.8);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.input-field.col label {
+    left: .75rem;
+}
+
+.input-field>label {
+    color: #9e9e9e;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1rem;
+    cursor: text;
+    -webkit-transition: color .2s ease-out, -webkit-transform .2s ease-out;
+    transition: color .2s ease-out, -webkit-transform .2s ease-out;
+    transition: transform .2s ease-out, color .2s ease-out;
+    transition: transform .2s ease-out, color .2s ease-out, -webkit-transform .2s ease-out;
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+    text-align: initial;
+    -webkit-transform: translateY(12px);
+    transform: translateY(12px);
+}
+
+input+label::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    opacity: 0;
+    -webkit-transition: .2s opacity ease-out, .2s color ease-out;
+    transition: .2s opacity ease-out, .2s color ease-out;
+}
+
+form .btn {
+    display: block;
+    margin: auto;
+}
+
+.btn {
+    text-decoration: none;
+    color: #fff;
+    background-color: #26a69a;
+    text-align: center;
+    letter-spacing: .5px;
+    -webkit-transition: background-color .2s ease-out;
+    transition: background-color .2s ease-out;
+    cursor: pointer;
+    font-size: 14px;
+    outline: 0;
+    border: none;
+    border-radius: 2px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
+    z-index: 1;
+    transition: .3s ease-out;
+}
+
+.btn:hover {
+    background-color: #2bbbad;
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+}
+
+.s6:first-child input {
+    width: 95%;
+}
+/*_______________________modal________________________*/
+
+.modal {
+    top: auto;
+    bottom: -100%;
+    margin: 0;
+    width: 100%;
+    max-height: 45%;
+    border-radius: 0;
+    will-change: bottom, opacity;
+
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: #fafafa;
+    padding: 0;
+    overflow-y: auto;
+
+    box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+
+    height: 200px;
+}
+
+.modal-body {
+    padding: 15px;
+}
+
+.modal-body p {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.modal-body button {
+    display: block;
+    margin: auto;
+}
+
+.active-modal {
+    z-index: 1003;
+    display: block;
+    opacity: 1;
+    bottom: 0px;
+}
+
+.overlay-active {
+    z-index: 1002; display: block; opacity: 0.5;
+}
+
+.modal-overlay {
+    position: fixed;
+    z-index: 999;
+    top: -25%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 125%;
+    width: 100%;
+    background: #000;
+    display: none;
+    will-change: opacity;
+}
+
+/* __________board___________ */
+
+.chessboard {
+    width: 520px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.chessboard .part {
+    height: 65px;
+    position: relative;
+    color: #fff;
+    cursor: pointer;
+}
+
+.part:hover {
+    background-color: #26a69a42;
+}
+
+.let {
+    position: absolute;
+    bottom: 0px;
+    left: 10px;
+}
+
+.colored {
+    background-color: #26a69a;
+}
+
+.uncolored {
+    background-color: #26a69a8a;
+}
+
+.white-fig.pawn::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wP.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.pawn::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bP.png') no-repeat;
+    background-position: center;
+}
+
+.white-fig.rook::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wR.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.rook::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bR.png') no-repeat;
+    background-position: center;
+}
+
+.white-fig.knight::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wN.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.knight::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bN.png') no-repeat;
+    background-position: center;
+}
+
+.white-fig.bishop::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wB.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.bishop::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bB.png') no-repeat;
+    background-position: center;
+}
+
+.white-fig.queen::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wQ.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.queen::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bQ.png') no-repeat;
+    background-position: center;
+}
+
+.white-fig.king::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/wK.png') no-repeat;
+    background-position: center;
+}
+
+.black-fig.king::before  {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('../img/chesspieces/wikipedia/bK.png') no-repeat;
+    background-position: center;
+}
