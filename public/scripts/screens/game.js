@@ -22,6 +22,7 @@ if (!title) {
 }
 generate(chessboard);
 addEvents();
+let turnHandler;
 function generate(chessboard) {
     let temp_chessboard = '';
     const lib_char = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -46,17 +47,17 @@ function addEvents() {
     }
 }
 function onClick(event) {
+    console.log(playerState);
     const cell = event.target;
     let id = cell.id.split('_');
     let colorFig = cell.classList[ClassesPositions.COLOR_CONST];
     let classlist = cell.classList;
-    console.log(id);
-    console.log(colorFig);
-    console.log(classlist);
-    if ((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig'))
+    if (!playerState.clicked && ((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig')))
         return;
+    console.log('f1');
     if ((!playerState.clicked && ((playerState.color + '-fig') != colorFig)) || (!playerState.clicked && (classlist.length < ClassesPositions.FIGURE_CONST)))
         return;
+    console.log('f2');
     if (!playerState.clicked) {
         playerState.from.row = Number(id[0]);
         playerState.from.col = Number(id[1]);
@@ -67,7 +68,7 @@ function onClick(event) {
     playerState.to.row = Number(id[0]);
     playerState.to.col = Number(id[1]);
     playerState.clicked = false;
-    console.log(playerState);
+    turnHandler && turnHandler(playerState);
 }
 function addfigure(row, col, type) {
     console.log(type[type.length - 1]);
@@ -85,8 +86,16 @@ function renderField(field) {
         }
     }
 }
+function clearField() {
+    for (let i = 8; i >= 1; i--) {
+        for (let j = 1; j <= 8; j++) {
+            document.getElementById((i + '_' + j)).className = 'col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored');
+        }
+    }
+}
 function update(myTurn, gameField, color) {
     console.log(gameField);
+    clearField();
     renderField(gameField);
     playerState.color = color;
     if (myTurn) {
@@ -96,7 +105,7 @@ function update(myTurn, gameField, color) {
     title.textContent = 'Ход противника';
 }
 function setTurnHandler(handler) {
-    console.log(handler);
+    turnHandler = handler;
 }
 export { update, setTurnHandler, };
 //# sourceMappingURL=game.js.map

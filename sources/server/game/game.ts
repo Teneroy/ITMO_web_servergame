@@ -1,17 +1,13 @@
 import WebSocket from 'ws';
-import { onError } from './on-error.js';
+import {onError} from './on-error.js';
 
-import type {
+import {
 	AnyClientMessage,
 	AnyServerMessage,
-	GameStartedMessage,
 	GameAbortedMessage,
+	GameStartedMessage,
+	PlayerGameState,
 } from '../../common/messages.js';
-
-type GamePlayer = {
-	player: WebSocket;
-	color: string;
-}
 
 /**
  * Класс игры
@@ -30,26 +26,17 @@ class Game
 	 */
 	private _session: WebSocket[];
 
-	private _playersSet: GamePlayer[];
+	private _playersSet!:  WeakMap<WebSocket, string>;
 
-	/**
-	 * Информация о ходах игроков
-	 */
-	private _playersState!: WeakMap<WebSocket, number | null>;
+	private _currentMove!: WebSocket;
 
-	private _gameField: Array<Array<string>>;
+	private _gameField!: Array<Array<string>>;
 	/**
 	 * @param session Сессия игры, содержащая перечень соединений с игроками
 	 */
 	constructor( session: WebSocket[] )
 	{
 		this._session = session;
-
-		this._playersSet = [];
-
-		this._gameField = [];
-		this._gameField = Game._generateGameField(this._gameField);
-
 		this._sendStartMessage()
 			.then(
 				() =>
@@ -87,7 +74,7 @@ class Game
 		
 		// Обнуляем ссылки
 		this._session = null as unknown as Game['_session'];
-		this._playersState = null as unknown as Game['_playersState'];
+		this._playersSet = null as unknown as Game['_playersSet'];
 	}
 	
 	/**
@@ -95,8 +82,10 @@ class Game
 	 */
 	private _sendStartMessage(): Promise<void[]>
 	{
-		this._playersState = new WeakMap();
-		
+		this._gameField = [];
+		this._gameField = Game._generateGameField(this._gameField);
+		this._currentMove = this._session[0];
+		this._playersSet = new WeakMap<WebSocket, string>();
 		const data: GameStartedMessage = {
 			type: 'gameStarted',
 			myTurn: true,
@@ -104,11 +93,11 @@ class Game
 			color: 'white'
 		};
 		const promises: Promise<void>[] = [];
-		
+
 		for ( const player of this._session )
 		{
 			promises.push( this._sendMessage( player, data ) );
-			this._playersSet.push( {player: player, color: data.color} );
+			this._playersSet.set(player, data.color);
 			data.myTurn = false;
 			data.color = 'black';
 		}
@@ -204,8 +193,8 @@ class Game
 	{
 		switch ( message.type )
 		{
-			case 'playerRoll':
-				this._onPlayerRoll( player, message.number );
+			case 'playerMove':
+				this._onPlayerRoll( player, message.move );
 				break;
 			
 			case 'repeatGame':
@@ -237,13 +226,13 @@ class Game
 	
 	/**
 	 * Обрабатывает ход игрока
-	 * 
+	 *
 	 * @param currentPlayer Игрок, от которого поступило сообщение
-	 * @param currentPlayerNumber Число, загаданное игроком
+	 * @param moveInfo
 	 */
-	private _onPlayerRoll( currentPlayer: WebSocket, currentPlayerNumber: number ): void
+	private _onPlayerRoll( currentPlayer: WebSocket, moveInfo: PlayerGameState ): void
 	{
-		if ( this._playersState.get( currentPlayer ) != null )
+		if ( this._currentMove !== currentPlayer )
 		{
 			this._sendMessage(
 				currentPlayer,
@@ -253,70 +242,135 @@ class Game
 				},
 			)
 				.catch( onError );
-			
 			return;
 		}
-		
-		this._playersState.set( currentPlayer, currentPlayerNumber );
-		
-		let maxNumber: number = currentPlayerNumber;
-		let maxNumberPlayer: WebSocket = currentPlayer;
-		let currentColor: string = '';
 
-		for ( const element of this._playersSet )
+		if (moveInfo.from.col > 8 || moveInfo.to.col > 8 || moveInfo.from.row < 1 || moveInfo.to.row < 1)
 		{
-			if(element.player === currentPlayer)
-				currentColor = element.color;
+			this._sendMessage(
+				currentPlayer,
+				{
+					type: 'incorrectRequest',
+					message: 'Out of field',
+				},
+			)
+				.catch( onError );
+			return;
 		}
 
+		if (moveInfo.from.col === moveInfo.to.col && moveInfo.from.row === moveInfo.to.row)
+		{
+			this._sendMessage(
+				currentPlayer,
+				{
+					type: 'incorrectRequest',
+					message: 'You have to move',
+				},
+			)
+				.catch( onError );
+			return;
+		}
+
+		let currentColor: string = <string>this._playersSet.get(currentPlayer);
+
+		let from: string = this._gameField[moveInfo.from.row - 1][moveInfo.from.col - 1];
+
+		if (from === '' || from[from.length - 1] === (currentColor === 'white' ? 'B' : 'W'))
+		{
+			this._sendMessage(
+				currentPlayer,
+				{
+					type: 'incorrectRequest',
+					message: 'Incorrect request',
+				},
+			)
+				.catch( onError );
+			return;
+		}
+
+		if (this._gameField[moveInfo.to.row - 1][moveInfo.to.col - 1] === ('king' + (currentColor === 'white' ? 'B' : 'W')))
+		{
+			this._sendMessage(
+				currentPlayer,
+				{
+					type: 'incorrectRequest',
+					message: 'Cannot eat king',
+				},
+			)
+				.catch( onError );
+			return;
+		}
+
+		let player2: WebSocket = currentPlayer;
+
+
+
+		this._gameField[moveInfo.to.row - 1][moveInfo.to.col - 1] = this._gameField[moveInfo.from.row - 1][moveInfo.from.col - 1];
+		this._gameField[moveInfo.from.row - 1][moveInfo.from.col - 1] = '';
+
+
+		let endgame: number = 0;
 		for ( const player of this._session )
 		{
-			const playerNumber = this._playersState.get( player );
-			
-			if ( playerNumber == null )
-			{
-				this._sendMessage(
-					player,
-					{
-						type: 'changePlayer',
-						myTurn: true,
-						gameField: this._gameField,
-						color: (currentColor === 'white' ? 'white' : 'black')
-					},
-				)
-					.catch( onError );
-				this._sendMessage(
-					currentPlayer,
-					{
-						type: 'changePlayer',
-						myTurn: false,
-						gameField: this._gameField,
-						color: currentColor
-					},
-				)
-					.catch( onError );
-				
-				return;
-			}
-			
-			if ( playerNumber > maxNumber )
-			{
-				maxNumber = playerNumber;
-				maxNumberPlayer = player;
-			}
+			if(player !== currentPlayer)
+				player2 = player;
+			endgame |= Number(Game._checkWin( this._gameField, <string>this._playersSet.get(player) ));
 		}
-		
+
+		this._currentMove = player2;
+
+		if ( !endgame )
+		{
+			this._sendMessage(
+				player2,
+				{
+					type: 'changePlayer',
+					myTurn: true,
+					gameField: this._gameField,
+					color: (currentColor === 'white' ? 'black' : 'white')
+				},
+			)
+				.catch( onError );
+			this._sendMessage(
+				currentPlayer,
+				{
+					type: 'changePlayer',
+					myTurn: false,
+					gameField: this._gameField,
+					color: currentColor
+				},
+			)
+				.catch( onError );
+
+			return;
+		}
+
 		for ( const player of this._session )
 		{
 			this._sendMessage(
 				player,
 				{
 					type: 'gameResult',
-					win: ( player === maxNumberPlayer ),
+					win: Game._checkWin(this._gameField, currentColor),
 				},
 			)
 				.catch( onError );
 		}
+	}
+
+	private static _checkWin(field: Array<Array<string>>, color: string): boolean
+	{
+		let counter: number = 0;
+		let col: string = (color === 'white' ? 'W' : 'B');
+		for(let i: number = 0; i < 8; i++)
+		{
+			for (let j: number = 0; j < 8; j++)
+			{
+				if (field[i][j][field[i][j].length - 1] === col)
+					counter++;
+			}
+		}
+		return (counter === 1);
 	}
 
 	/**

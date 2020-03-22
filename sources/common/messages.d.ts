@@ -12,6 +12,18 @@ export type GameStartedMessage = {
 	color: string;
 };
 
+export type CellPosition = {
+	row: number;
+	col: number;
+};
+
+export type PlayerGameState = {
+	clicked: boolean;
+	from: CellPosition;
+	to: CellPosition;
+	color: string;
+};
+
 /**
  * Игра прервана
  */
@@ -23,11 +35,11 @@ export type GameAbortedMessage = {
 /**
  * Ход игрока
  */
-export type PlayerRollMessage = {
+export type PlayerMoveMessage = {
 	/** Тип сообщения */
-	type: 'playerRoll';
+	type: 'playerMove';
 	/** Число, названное игроком */
-	number: number;
+	move: PlayerGameState;
 };
 
 /**
@@ -82,6 +94,9 @@ export type IncorrectResponseMessage = {
 	message: string;
 };
 
+
+
+
 /**
  * Сообщения от сервера к клиенту
  */
@@ -97,7 +112,7 @@ export type AnyServerMessage =
  * Сообщения от клиента к серверу
  */
 export type AnyClientMessage =
-	| PlayerRollMessage
+	| PlayerMoveMessage
 	| RepeatGame
 	| IncorrectRequestMessage
 	| IncorrectResponseMessage;

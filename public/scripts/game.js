@@ -7,10 +7,10 @@ let sendMessage;
 function setSendMessage(sendMessageFunction) {
     sendMessage = sendMessageFunction;
 }
-function turnHandler(number) {
+function turnHandler(move) {
     sendMessage({
-        type: 'playerRoll',
-        number,
+        type: 'playerMove',
+        move: move,
     });
 }
 function restartHandler() {

@@ -1,18 +1,7 @@
 /**
  * Заголовок экрана
  */
-
-type CellPosition = {
-	row: number;
-	col: number;
-};
-
-type PlayerGameState = {
-	clicked: boolean;
-	from: CellPosition;
-	to: CellPosition;
-	color: string;
-};
+import { PlayerGameState } from "../../common/messages";
 
 enum ClassesPositions {
 	COLOR_CONST = 5,
@@ -35,19 +24,6 @@ const playerState: PlayerGameState = {
 };
 
 /**
- * Форма для действий игрока
- */
-// const form = document.forms.namedItem( 'player-roll' )!;
-/**
- * Набор полей на форме
- */
-// const fieldset = form.querySelector( 'fieldset' )!;
-/**
- * Поле с загаданным числом
- */
-// onst numberInput = form.elements.namedItem( 'number' ) as HTMLInputElement;
-
-/**
  * Игровая доска
  */
 const chessboard = document.querySelector('.chessboard') as HTMLInputElement;
@@ -67,15 +43,12 @@ addEvents();
 /**
  * Обработчик хода игрока
  */
-type TurnHandler = ( number: number ) => void;
+type TurnHandler = (move: PlayerGameState) => void;
 
 /**
  * Обработчик хода игрока
  */
 let turnHandler: TurnHandler;
-
-//form.addEventListener( 'submit', onSubmit );
-
 
 
 /**
@@ -117,17 +90,17 @@ function addEvents(): void
  */
 function onClick( event: Event ): void
 {
+	console.log(playerState);
 	const cell = event.target as HTMLElement;
 	let id = cell.id.split('_');
 	let colorFig = cell.classList[ClassesPositions.COLOR_CONST];
 	let classlist = cell.classList;
-	console.log(id);
-	console.log(colorFig);
-	console.log(classlist);
-	if((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig'))
+	if(!playerState.clicked && ((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig')) )
 		return;
-	if((!playerState.clicked && ( (playerState.color + '-fig') != colorFig)) || (!playerState.clicked && (classlist.length < ClassesPositions.FIGURE_CONST)))
+	console.log('f1');
+	if((!playerState.clicked && ( (playerState.color + '-fig') != colorFig )) || (!playerState.clicked && (classlist.length < ClassesPositions.FIGURE_CONST)))
 		return;
+	console.log('f2');
 	if(!playerState.clicked)
 	{
 		playerState.from.row = Number(id[0]);
@@ -139,14 +112,6 @@ function onClick( event: Event ): void
 	playerState.to.row = Number(id[0]);
 	playerState.to.col = Number(id[1]);
 	playerState.clicked = false;
-	console.log(playerState);
-	// clicked = true;
-	// const cell = event.target as HTMLElement;
-	// if(!cell.classList.contains('figure'))
-	// {
-	// 	return;
-	// }
-	// console.log(cell.classList);
 	turnHandler && turnHandler( playerState );
 }
 
@@ -176,6 +141,16 @@ function renderField(field: Array<Array<string>>): void
 	}
 }
 
+function clearField(): void
+{
+	for (let i: number = 8; i >= 1; i--) {
+		for(let j: number = 1; j <= 8; j++) {
+			// @ts-ignore
+			document.getElementById((i + '_' + j)).className = 'col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored');
+		}
+	}
+}
+
 
 
 /**
@@ -188,6 +163,7 @@ function renderField(field: Array<Array<string>>): void
 function update( myTurn: boolean, gameField: Array<Array<string>>, color: string ): void
 {
 	console.log(gameField);
+	clearField();
 	renderField(gameField);
 	playerState.color = color;
 	if ( myTurn )
@@ -206,7 +182,6 @@ function update( myTurn: boolean, gameField: Array<Array<string>>, color: string
 function setTurnHandler( handler: TurnHandler ): void
 {
 	turnHandler = handler;
-	console.log(handler)
 }
 
 export {
