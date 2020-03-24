@@ -1,8 +1,5 @@
-var ClassesPositions;
-(function (ClassesPositions) {
-    ClassesPositions[ClassesPositions["COLOR_CONST"] = 5] = "COLOR_CONST";
-    ClassesPositions[ClassesPositions["FIGURE_CONST"] = 4] = "FIGURE_CONST";
-})(ClassesPositions || (ClassesPositions = {}));
+const COLOR_CONST = 5;
+const FIGURE_CONST = 4;
 const title = document.querySelector('main.game h2');
 const playerState = {
     clicked: false,
@@ -31,9 +28,9 @@ function generate(chessboard) {
     for (let i = 8; i >= 1; i--) {
         temp_chessboard += '<div class="row">';
         for (let j = 1; j <= 8; j++) {
-            nm = (j == 1 ? ('<span class="num">' + i + '</span>') : '');
-            lt = (i == 1 ? ('<span class="let">' + lib_char[j - 1] + '</span>') : '');
-            temp_chessboard += ('<div class="col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored') + '" id="' + i + '_' + j + '">' + nm + '' + lt + '</div>');
+            nm = (j === 1 ? ('<span class="num">' + i + '</span>') : '');
+            lt = (i === 1 ? ('<span class="let">' + lib_char[j - 1] + '</span>') : '');
+            temp_chessboard += ('<div class="col part ' + ((i + j) % 2 === 0 ? 'colored' : 'uncolored') + '" id="' + i + '_' + j + '">' + nm + '' + lt + '</div>');
         }
         temp_chessboard += '</div>';
     }
@@ -50,12 +47,12 @@ function onClick(event) {
     console.log(playerState);
     const cell = event.target;
     let id = cell.id.split('_');
-    let colorFig = cell.classList[ClassesPositions.COLOR_CONST];
+    let colorFig = cell.classList[COLOR_CONST];
     let classlist = cell.classList;
-    if (!playerState.clicked && ((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig')))
+    if (!playerState.clicked && ((playerState.color === 'white' && colorFig === 'black-fig') || (playerState.color === 'black' && colorFig === 'white-fig')))
         return;
     console.log('f1');
-    if ((!playerState.clicked && ((playerState.color + '-fig') != colorFig)) || (!playerState.clicked && (classlist.length < ClassesPositions.FIGURE_CONST)))
+    if ((!playerState.clicked && ((playerState.color + '-fig') != colorFig)) || (!playerState.clicked && (classlist.length < FIGURE_CONST)))
         return;
     console.log('f2');
     if (!playerState.clicked) {
@@ -70,7 +67,7 @@ function onClick(event) {
     playerState.clicked = false;
     turnHandler && turnHandler(playerState);
 }
-function addfigure(row, col, type) {
+function addFigure(row, col, type) {
     console.log(type[type.length - 1]);
     const cell = document.getElementById((row + '_' + col));
     cell.classList.add('figure');
@@ -82,14 +79,14 @@ function renderField(field) {
         for (let j = 1; j <= 8; j++) {
             if (field[i - 1][j - 1] === '')
                 continue;
-            addfigure(i, j, field[i - 1][j - 1]);
+            addFigure(i, j, field[i - 1][j - 1]);
         }
     }
 }
 function clearField() {
     for (let i = 8; i >= 1; i--) {
         for (let j = 1; j <= 8; j++) {
-            document.getElementById((i + '_' + j)).className = 'col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored');
+            document.getElementById((i + '_' + j)).className = 'col part ' + ((i + j) % 2 === 0 ? 'colored' : 'uncolored');
         }
     }
 }

@@ -223,6 +223,11 @@ class Game
 				break;
 		}
 	}
+
+	private static _getColorAbbr(color: string): string
+	{
+		return (color === 'white' ? 'B' : 'W');
+	}
 	
 	/**
 	 * Обрабатывает ход игрока
@@ -271,11 +276,11 @@ class Game
 			return;
 		}
 
-		let currentColor: string = <string>this._playersSet.get(currentPlayer);
+		const currentColor: string = this._playersSet.get(currentPlayer)!;
 
 		let from: string = this._gameField[moveInfo.from.row - 1][moveInfo.from.col - 1];
 
-		if (from === '' || from[from.length - 1] === (currentColor === 'white' ? 'B' : 'W'))
+		if (from === '' || from[from.length - 1] === Game._getColorAbbr(currentColor))
 		{
 			this._sendMessage(
 				currentPlayer,
@@ -288,18 +293,7 @@ class Game
 			return;
 		}
 
-		if (this._gameField[moveInfo.to.row - 1][moveInfo.to.col - 1] === ('king' + (currentColor === 'white' ? 'B' : 'W')))
-		{
-			this._sendMessage(
-				currentPlayer,
-				{
-					type: 'incorrectRequest',
-					message: 'Cannot eat king',
-				},
-			)
-				.catch( onError );
-			return;
-		}
+
 
 		let player2: WebSocket = currentPlayer;
 
@@ -314,7 +308,7 @@ class Game
 		{
 			if(player !== currentPlayer)
 				player2 = player;
-			endgame |= Number(Game._checkWin( this._gameField, <string>this._playersSet.get(player) ));
+			endgame |= Number(Game._checkWin( this._gameField, this._playersSet.get(player)! ));
 		}
 
 		this._currentMove = player2;
@@ -351,7 +345,7 @@ class Game
 				player,
 				{
 					type: 'gameResult',
-					win: Game._checkWin(this._gameField, currentColor),
+					win: Game._checkWin(this._gameField, this._playersSet.get(player)!),
 				},
 			)
 				.catch( onError );
@@ -360,17 +354,16 @@ class Game
 
 	private static _checkWin(field: Array<Array<string>>, color: string): boolean
 	{
-		let counter: number = 0;
-		let col: string = (color === 'white' ? 'W' : 'B');
+		let col: string = Game._getColorAbbr(color);
 		for(let i: number = 0; i < 8; i++)
 		{
 			for (let j: number = 0; j < 8; j++)
 			{
-				if (field[i][j][field[i][j].length - 1] === col)
-					counter++;
+				if (field[i][j][field[i][j].length - 1] === col && field[i][j].substring(0, field[i][j].length - 1) === 'king')
+					return false
 			}
 		}
-		return (counter === 1);
+		return true;
 	}
 
 	/**

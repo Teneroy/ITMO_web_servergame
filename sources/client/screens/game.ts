@@ -3,10 +3,8 @@
  */
 import { PlayerGameState } from "../../common/messages";
 
-enum ClassesPositions {
-	COLOR_CONST = 5,
-	FIGURE_CONST = 4
-}
+const COLOR_CONST: number = 5;
+const FIGURE_CONST:number = 4;
 
 const title = document.querySelector( 'main.game h2' ) as HTMLHeadingElement;
 
@@ -64,9 +62,9 @@ function generate(chessboard : HTMLElement): void
 	for(let i: number = 8; i >= 1; i--) {
 		temp_chessboard += '<div class="row">';
 		for(let j: number = 1; j <= 8; j++) {
-			nm = (j == 1 ? ('<span class="num">' + i + '</span>') : '');
-			lt = (i == 1 ? ('<span class="let">' + lib_char[j - 1] + '</span>') : '');
-			temp_chessboard += ('<div class="col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored') + '" id="' + i + '_' + j + '">' + nm + '' + lt + '</div>');
+			nm = (j === 1 ? ('<span class="num">' + i + '</span>') : '');
+			lt = (i === 1 ? ('<span class="let">' + lib_char[j - 1] + '</span>') : '');
+			temp_chessboard += ('<div class="col part ' + ((i + j) % 2 === 0 ? 'colored' : 'uncolored') + '" id="' + i + '_' + j + '">' + nm + '' + lt + '</div>');
 		}
 		temp_chessboard += '</div>';
 	}
@@ -77,8 +75,7 @@ function addEvents(): void
 {
 	for (let i: number = 1; i <= 8; i++ ) {
 		for(let j: number = 1; j <= 8; j++) {
-			// @ts-ignore
-			document.getElementById((i + '_' + j)).addEventListener('click', onClick);
+			document.getElementById((i + '_' + j))!.addEventListener('click', onClick);
 		}
 	}
 }
@@ -93,12 +90,12 @@ function onClick( event: Event ): void
 	console.log(playerState);
 	const cell = event.target as HTMLElement;
 	let id = cell.id.split('_');
-	let colorFig = cell.classList[ClassesPositions.COLOR_CONST];
+	let colorFig = cell.classList[COLOR_CONST];
 	let classlist = cell.classList;
-	if(!playerState.clicked && ((playerState.color == 'white' && colorFig == 'black-fig') || (playerState.color == 'black' && colorFig == 'white-fig')) )
+	if(!playerState.clicked && ((playerState.color === 'white' && colorFig === 'black-fig') || (playerState.color === 'black' && colorFig === 'white-fig')) )
 		return;
 	console.log('f1');
-	if((!playerState.clicked && ( (playerState.color + '-fig') != colorFig )) || (!playerState.clicked && (classlist.length < ClassesPositions.FIGURE_CONST)))
+	if((!playerState.clicked && ( (playerState.color + '-fig') != colorFig )) || (!playerState.clicked && (classlist.length < FIGURE_CONST)))
 		return;
 	console.log('f2');
 	if(!playerState.clicked)
@@ -121,7 +118,7 @@ function onClick( event: Event ): void
  * @param col позиция по x
  * @param type фигура
  */
-function addfigure(row: number, col: number, type: string): void
+function addFigure(row: number, col: number, type: string): void
 {
 	console.log(type[type.length - 1]);
 	const cell = document.getElementById((row + '_' + col)) as HTMLElement;
@@ -136,7 +133,7 @@ function renderField(field: Array<Array<string>>): void
 		for(let j: number = 1; j <= 8; j++) {
 			if(field[i - 1][j - 1] === '')
 				continue;
-			addfigure(i, j, field[i - 1][j - 1]);
+			addFigure(i, j, field[i - 1][j - 1]);
 		}
 	}
 }
@@ -145,8 +142,7 @@ function clearField(): void
 {
 	for (let i: number = 8; i >= 1; i--) {
 		for(let j: number = 1; j <= 8; j++) {
-			// @ts-ignore
-			document.getElementById((i + '_' + j)).className = 'col part ' + ((i + j) % 2 == 0 ? 'colored' : 'uncolored');
+			document.getElementById((i + '_' + j))!.className = 'col part ' + ((i + j) % 2 === 0 ? 'colored' : 'uncolored');
 		}
 	}
 }
