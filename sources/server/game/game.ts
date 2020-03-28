@@ -7,6 +7,7 @@ import {
 	GameAbortedMessage,
 	GameStartedMessage,
 	PlayerGameState,
+	PlayerColor
 } from '../../common/messages.js';
 
 /**
@@ -26,7 +27,7 @@ class Game
 	 */
 	private _session: WebSocket[];
 
-	private _playersSet!:  WeakMap<WebSocket, string>;
+	private _playersSet!:  WeakMap<WebSocket, PlayerColor>;
 
 	private _currentMove!: WebSocket;
 
@@ -85,7 +86,7 @@ class Game
 		this._gameField = [];
 		this._gameField = Game._generateGameField(this._gameField);
 		this._currentMove = this._session[0];
-		this._playersSet = new WeakMap<WebSocket, string>();
+		this._playersSet = new WeakMap<WebSocket, PlayerColor>();
 		const data: GameStartedMessage = {
 			type: 'gameStarted',
 			myTurn: true,
@@ -276,7 +277,7 @@ class Game
 			return;
 		}
 
-		const currentColor: string = this._playersSet.get(currentPlayer)!;
+		const currentColor: PlayerColor = this._playersSet.get(currentPlayer)!;
 
 		let from: string = this._gameField[moveInfo.from.row - 1][moveInfo.from.col - 1];
 

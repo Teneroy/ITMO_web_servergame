@@ -1,6 +1,9 @@
 /**
  * Начало игры
  */
+export type PlayerColor = 'white' | 'black';
+
+
 export type GameStartedMessage = {
 	/** Тип сообщения */
 	type: 'gameStarted';
@@ -9,7 +12,7 @@ export type GameStartedMessage = {
 	/** игровое поле */
 	gameField: Array<Array<string>>;
 	/** цвет игрока */
-	color: string;
+	color: PlayerColor;
 };
 
 export type CellPosition = {
@@ -21,7 +24,7 @@ export type PlayerGameState = {
 	clicked: boolean;
 	from: CellPosition;
 	to: CellPosition;
-	color: string;
+	color: PlayerColor;
 };
 
 /**
@@ -63,7 +66,7 @@ export type ChangePlayerMessage = {
 	/** игровое поле */
 	gameField: Array<Array<string>>;
 	/** цвет игрока */
-	color: string;
+	color: PlayerColor;
 };
 
 /**

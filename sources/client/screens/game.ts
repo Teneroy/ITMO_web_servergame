@@ -1,7 +1,7 @@
 /**
  * Заголовок экрана
  */
-import { PlayerGameState } from "../../common/messages";
+import { PlayerGameState, PlayerColor } from "../../common/messages";
 
 const COLOR_CONST: number = 5;
 const FIGURE_CONST:number = 4;
@@ -18,7 +18,7 @@ const playerState: PlayerGameState = {
 		row: 0,
 		col: 0
 	},
-	color: ''
+	color: 'white'
 };
 
 /**
@@ -156,7 +156,7 @@ function clearField(): void
  * @param gameField игровое поле
  * @param color
  */
-function update( myTurn: boolean, gameField: Array<Array<string>>, color: string ): void
+function update( myTurn: boolean, gameField: Array<Array<string>>, color: PlayerColor ): void
 {
 	console.log(gameField);
 	clearField();

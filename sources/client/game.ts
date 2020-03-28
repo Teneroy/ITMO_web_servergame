@@ -1,7 +1,7 @@
 import { openScreen } from './screens.js';
 import * as GameScreen from './screens/game.js';
 import * as ResultScreen from './screens/result.js';
-import {PlayerGameState} from "../common/messages";
+import {PlayerGameState, PlayerColor} from "../common/messages";
 
 GameScreen.setTurnHandler( turnHandler );
 ResultScreen.setRestartHandler( restartHandler );
@@ -59,7 +59,7 @@ function startGame(): void
  * @param gameField игровое поле
  * @param color
  */
-function changePlayer( myTurn: boolean, gameField: Array<Array<string>>, color: string ): void
+function changePlayer( myTurn: boolean, gameField: Array<Array<string>>, color: PlayerColor ): void
 {
 	GameScreen.update( myTurn, gameField, color );
 }

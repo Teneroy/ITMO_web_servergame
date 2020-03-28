@@ -11,7 +11,7 @@ const playerState = {
         row: 0,
         col: 0
     },
-    color: ''
+    color: 'white'
 };
 const chessboard = document.querySelector('.chessboard');
 if (!title) {
